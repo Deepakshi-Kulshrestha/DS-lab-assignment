@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct DNode {
+    int data;
+    struct DNode *prev, *next;
+};
+
+struct CNode {
+    int data;
+    struct CNode *next;
+};
+
+struct DNode *dhead = NULL;
+struct CNode *chead = NULL;
+
+struct DNode* makeD(int v){
+    struct DNode *n = malloc(sizeof(struct DNode));
+    n->data = v; n->prev = n->next = NULL;
+    return n;
+}
+struct CNode* makeC(int v){
+    struct CNode *n = malloc(sizeof(struct CNode));
+    n->data = v; n->next = NULL;
+    return n;
+}
+
+void insertD(int v){
+    struct DNode *n = makeD(v);
+    if(!dhead){ dhead=n; return; }
+    struct DNode *t=dhead;
+    while(t->next) t=t->next;
+    t->next=n; n->prev=t;
+}
+
+void insertC(int v){
+    struct CNode *n = makeC(v);
+    if(!chead){
+        chead=n; n->next=n;
+        return;
+    }
+    struct CNode *t=chead;
+    while(t->next!=chead) t=t->next;
+    t->next=n; n->next=chead;
+}
+
+int sizeD(){
+    int c=0;
+    struct DNode *t=dhead;
+    while(t){ c++; t=t->next; }
+    return c;
+}
+
+int sizeC(){
+    if(!chead) return 0;
+    int c=0;
+    struct CNode *t=chead;
+    do{
+        c++;
+        t=t->next;
+    }while(t!=chead);
+    return c;
+}
+
+int main(){
+    insertD(10); insertD(20); insertD(30);
+    insertC(5);  insertC(6);  insertC(7);
+
+    printf("Size of DLL = %d\n", sizeD());
+    printf("Size of CLL = %d\n", sizeC());
+
+    return 0;
+}
