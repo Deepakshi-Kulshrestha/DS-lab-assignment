@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *next;
+};
+
+struct Node *head = NULL;
+
+struct Node* makeNode(int v){
+    struct Node *n = (struct Node*)malloc(sizeof(struct Node));
+    n->data = v;
+    n->next = NULL;
+    return n;
+}
+
+void insertEnd(int v){
+    struct Node *n = makeNode(v);
+
+    if(head==NULL){
+        head = n;
+        n->next = head;
+        return;
+    }
+
+    struct Node *t = head;
+    while(t->next != head) t = t->next;
+
+    t->next = n;
+    n->next = head;
+}
+
+void displayCircular(){
+    if(head==NULL){
+        printf("list empty\n");
+        return;
+    }
+
+    struct Node *t = head;
+    do{
+        printf("%d ", t->data);
+        t = t->next;
+    }while(t != head);
+
+    printf("%d\n", head->data);
+}
+
+int main(){
+    insertEnd(20);
+    insertEnd(100);
+    insertEnd(40);
+    insertEnd(80);
+    insertEnd(60);
+
+    printf("Circular LL : ");
+    displayCircular();
+
+    return 0;
+}
