@@ -1,0 +1,121 @@
+#include <stdio.h>
+
+
+struct CNode {
+    int data;
+    struct CNode *next;
+};
+
+struct CNode *chead = NULL;
+
+struct CNode* createCNode(int val){
+    struct CNode *t = (struct CNode*)malloc(sizeof(struct CNode));
+    t->data = val;
+    t->next = NULL;
+    return t;
+}
+
+void insertCircular(int val, int pos){
+    struct CNode *newn = createCNode(val);
+
+    if(chead==NULL){
+        chead = newn;
+        newn->next = chead;
+        return;
+    }
+
+    if(pos==1){   // insert at head
+        struct CNode *temp = chead;
+        while(temp->next != chead) temp = temp->next;
+        temp->next = newn;
+        newn->next = chead;
+        chead = newn;
+    } else {
+        struct CNode *temp = chead;
+        int i=1;
+        while(i<pos-1 && temp->next!=chead){
+            temp = temp->next;
+            i++;
+        }
+        newn->next = temp->next;
+        temp->next = newn;
+    }
+}
+
+void deleteCircular(int val){
+    if(chead==NULL){
+        printf("list empty\n");
+        return;
+    }
+
+    struct CNode *temp = chead, *prev=NULL;
+
+
+    if(chead->data == val){
+        while(temp->next!=chead) temp=temp->next;
+        if(temp==chead){   // only one node
+            free(chead);
+            chead=NULL;
+        } else {
+            temp->next = chead->next;
+            free(chead);
+            chead = temp->next;
+        }
+        return;
+    }
+
+    temp = chead;
+    while(temp->next!=chead && temp->data!=val){
+        prev=temp;
+        temp=temp->next;
+    }
+    if(temp->data==val){
+        prev->next = temp->next;
+        free(temp);
+    } else {
+        printf("value not found\n");
+    }
+}
+
+void searchCircular(int val){
+    if(chead==NULL){
+        printf("empty list\n");
+        return;
+    }
+    struct CNode *t = chead;
+    int pos=1;
+    do{
+        if(t->data == val){
+            printf("Found at position %d\n", pos);
+            return;
+        }
+        t=t->next;
+        pos++;
+    }while(t!=chead);
+
+    printf("Not found\n");
+}
+
+void displayCircular(){
+    if(chead==NULL){
+        printf("empty\n");
+        return;
+    }
+    struct CNode *temp = chead;
+    do{
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }while(temp!=chead);
+    printf("%d\n", chead->data); 
+}
+
+int sizeCircular(){
+    if(chead==NULL) return 0;
+    int cnt=0;
+    struct CNode *t = chead;
+    do{
+        cnt++;
+        t=t->next;
+    }while(t!=chead);
+    return cnt;
+}
